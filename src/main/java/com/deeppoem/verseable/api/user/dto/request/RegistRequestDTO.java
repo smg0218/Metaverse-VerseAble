@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
-public class RegistResponseDTO {
+public class RegistRequestDTO {
     @NotBlank(message = "ID는 필수로 입력해야 합니다!")
     private String id;
     @NotBlank(message = "PW는 필수로 입력해야 합니다!")
@@ -39,7 +39,7 @@ public class RegistResponseDTO {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        RegistResponseDTO that = (RegistResponseDTO) o;
+        RegistRequestDTO that = (RegistRequestDTO) o;
         return Objects.equals(id, that.id) && Objects.equals(pw, that.pw) && Objects.equals(nickname, that.nickname);
     }
 

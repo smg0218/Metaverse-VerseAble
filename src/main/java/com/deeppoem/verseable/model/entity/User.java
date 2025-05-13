@@ -1,6 +1,6 @@
 package com.deeppoem.verseable.model.entity;
 
-import com.deeppoem.verseable.api.user.dto.request.RegistResponseDTO;
+import com.deeppoem.verseable.api.user.dto.request.RegistRequestDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
 
@@ -28,7 +28,7 @@ public class User {
 
     protected User() {}
 
-    public User(RegistResponseDTO responseDTO, String pw) {
+    public User(RegistRequestDTO responseDTO, String pw) {
         this.userId = responseDTO.getId();
         this.password = pw;
         this.userName = responseDTO.getNickname();

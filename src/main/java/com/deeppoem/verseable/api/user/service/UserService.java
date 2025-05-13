@@ -1,7 +1,7 @@
 package com.deeppoem.verseable.api.user.service;
 
 import com.deeppoem.verseable.api.user.dto.request.LoginRequestDTO;
-import com.deeppoem.verseable.api.user.dto.request.RegistResponseDTO;
+import com.deeppoem.verseable.api.user.dto.request.RegistRequestDTO;
 import com.deeppoem.verseable.api.user.dto.response.LoginResponseDTO;
 import com.deeppoem.verseable.api.user.repository.UserRepository;
 import com.deeppoem.verseable.model.entity.User;
@@ -38,7 +38,7 @@ public class UserService {
     }
 
     @Transactional
-    public String Regist(RegistResponseDTO responseDTO) {
+    public String Regist(RegistRequestDTO responseDTO) {
         Optional<User> findUser = userRepository.findById(responseDTO.getId());
 
         if(findUser.isPresent()) {
