@@ -8,6 +8,7 @@ import com.deeppoem.verseable.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public class UserService {
 
         if(findUser.isPresent()) {
             User user = findUser.get();
-            if(user.getPassword().equals(encoder.encode(requestDTO.getPw())))
+            if(encoder.matches(requestDTO.getPw(), user.getPassword()))
                 return new LoginResponseDTO(user.getUserId(), user.getUserName());
             else
                 return new LoginResponseDTO("ID 혹은 Password가 일치하지 않습니다!");
@@ -36,6 +37,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public String Regist(RegistResponseDTO responseDTO) {
         Optional<User> findUser = userRepository.findById(responseDTO.getId());
 

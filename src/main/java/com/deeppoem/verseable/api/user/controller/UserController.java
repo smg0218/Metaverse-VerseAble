@@ -7,15 +7,16 @@ import com.deeppoem.verseable.api.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController("/api/user")
+@RestController
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
 
@@ -24,7 +25,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDTO,
                         BindingResult result) {
         if (result.hasErrors()) {
@@ -47,7 +48,7 @@ public class UserController {
 
         String registResult = userService.Regist(responseDTO);
         Map<String,String> responseBody = new HashMap<>();
-        if(registResult.isEmpty())
+        if(registResult == null || registResult.isEmpty())
             responseBody.put("message", "가입 성공!");
         else
             responseBody.put("message", registResult);
