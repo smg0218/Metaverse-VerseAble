@@ -1,5 +1,6 @@
 package com.deeppoem.verseable.model.entity;
 
+import com.deeppoem.verseable.api.user.dto.request.RegistResponseDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
 
@@ -24,6 +25,14 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Comment("유저의 결과 목록")
     private List<Result> results;
+
+    protected User() {}
+
+    public User(RegistResponseDTO responseDTO, String pw) {
+        this.userId = responseDTO.getId();
+        this.password = pw;
+        this.userName = responseDTO.getNickname();
+    }
 
     public String getUserId() {
         return userId;

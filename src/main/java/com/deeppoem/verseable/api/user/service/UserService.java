@@ -1,10 +1,12 @@
 package com.deeppoem.verseable.api.user.service;
 
 import com.deeppoem.verseable.api.user.dto.request.LoginRequestDTO;
+import com.deeppoem.verseable.api.user.dto.request.RegistResponseDTO;
 import com.deeppoem.verseable.api.user.dto.response.LoginResponseDTO;
 import com.deeppoem.verseable.api.user.repository.UserRepository;
 import com.deeppoem.verseable.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,10 +14,12 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     public LoginResponseDTO LogIn(LoginRequestDTO requestDTO) {
@@ -23,12 +27,26 @@ public class UserService {
 
         if(findUser.isPresent()) {
             User user = findUser.get();
-            if(user.getPassword().equals(requestDTO.getPw()))
+            if(user.getPassword().equals(encoder.encode(requestDTO.getPw())))
                 return new LoginResponseDTO(user.getUserId(), user.getUserName());
             else
                 return new LoginResponseDTO("ID 혹은 Password가 일치하지 않습니다!");
         } else {
             return new LoginResponseDTO("ID 혹은 Password가 일치하지 않습니다!");
+        }
+    }
+
+    public String Regist(RegistResponseDTO responseDTO) {
+        Optional<User> findUser = userRepository.findById(responseDTO.getId());
+
+        if(findUser.isPresent()) {
+            return "이미 가입된 ID입니다!";
+        } else {
+            User user = new User(responseDTO, encoder.encode(responseDTO.getPw()));
+
+            userRepository.save(user);
+
+            return null;
         }
     }
 }
