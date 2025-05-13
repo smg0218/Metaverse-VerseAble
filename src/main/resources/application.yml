@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://midnight.cf8soa26yc3q.ap-northeast-2.rds.amazonaws.com:3306/midnight
+    username: DeepPoem
+    password: DeepPoem123!#
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+
+
+server:
+  port: 8888
