@@ -29,8 +29,8 @@ public class Result {
         return resultPath;
     }
 
-    public void setResultPath(String resultPath) {
-        this.resultPath = resultPath;
+    public void setResultPath(String resultText) {
+        this.resultPath = resultText;
     }
 
     public User getUser() {

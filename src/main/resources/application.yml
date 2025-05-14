@@ -5,10 +5,7 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-      location: /tmp # 임시 업로드 위치 명시적 설정
-  web:
-    resources:
-      static-locations: classpath:/static/,file:${file.upload.path}/ # 정적 리소스 위치 추가
+      location:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://midnight.cf8soa26yc3q.ap-northeast-2.rds.amazonaws.com:3306/midnight
@@ -35,5 +32,4 @@ server:
 # 파일 업로드 경로 설정
 file:
   upload:
-    path: /home/ubuntu/verseable-uploads # Ubuntu 서버 환경의 절대 경로로 수정
-    access-path: /images/** # 업로드된 이미지 접근 URL 패턴
+    path: ${user.home}/verseable-uploads
