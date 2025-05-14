@@ -1,5 +1,7 @@
 package com.deeppoem.verseable.api.user.controller;
 
+import com.deeppoem.verseable.api.result.dto.response.ResultResponseDTO;
+import com.deeppoem.verseable.api.result.dto.response.ResultResponseListDTO;
 import com.deeppoem.verseable.api.user.dto.request.LoginRequestDTO;
 import com.deeppoem.verseable.api.user.dto.request.RegistRequestDTO;
 import com.deeppoem.verseable.api.user.dto.response.LoginResponseDTO;
@@ -9,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,5 +62,15 @@ public class UserController {
             responseBody.put("message", registResult);
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping("/result")
+    public ResponseEntity<?> getResult(@RequestParam(name = "id") String userId ) {
+        log.info("/api/user/result : GET");
+        log.info("request id : {}", userId);
+
+        ResultResponseListDTO responseDTO = userService.getResultList(userId);
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

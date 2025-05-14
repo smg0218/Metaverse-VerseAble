@@ -1,15 +1,60 @@
 package com.deeppoem.verseable.api.result.controller;
 
-import com.deeppoem.verseable.api.user.service.UserService;
+import com.deeppoem.verseable.api.result.dto.request.ResultRequestDTO;
+import com.deeppoem.verseable.api.result.dto.response.ResultResponseDTO;
+import com.deeppoem.verseable.api.result.service.ResultService;
+import com.deeppoem.verseable.api.user.dto.response.LoginResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/result")
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/result")
 public class ResultController {
-    private final UserService userService;
+    private static final Logger log = LoggerFactory.getLogger(ResultController.class);
+    private final ResultService resultService;
 
     @Autowired
-    public ResultController(UserService userService) {
-        this.userService = userService;
+    public ResultController(ResultService resultService) {
+        this.resultService = resultService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getResultList(@RequestParam Long resultId) {
+        log.info("/api/result : GET");
+        log.info("userId : {}", resultId);
+
+        ResultResponseDTO responseDTO = resultService.getResult(resultId);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> postResult(@RequestBody ResultRequestDTO requestDTO, BindingResult result) {
+        log.info("/api/result : POST");
+        log.info("requestDTO : {}", requestDTO);
+
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(new LoginResponseDTO(
+                    result.getAllErrors().get(0).getDefaultMessage()
+            ));
+        }
+
+        String message = resultService.addResult(requestDTO);
+        Map<String,String> responseBody = new HashMap<>();
+
+        if(message== null) {
+            responseBody.put("message", "성공!");
+            return ResponseEntity.ok().body(responseBody);
+        } else {
+            responseBody.put("message", message);
+            return ResponseEntity.badRequest().body(responseBody);
+        }
     }
 }

@@ -18,10 +18,6 @@ public class User {
     @Comment("유저의 패스워드")
     private String password;
 
-    @Column(name = "USER_NAME")
-    @Comment("유저의 닉네임")
-    private String userName;
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Comment("유저의 결과 목록")
     private List<Result> results;
@@ -31,7 +27,6 @@ public class User {
     public User(RegistRequestDTO responseDTO, String pw) {
         this.userId = responseDTO.getId();
         this.password = pw;
-        this.userName = responseDTO.getNickname();
     }
 
     public String getUserId() {
@@ -50,14 +45,6 @@ public class User {
         this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public List<Result> getResults() {
         return results;
     }
@@ -70,12 +57,12 @@ public class User {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userId, user.userId) && Objects.equals(password, user.password) && Objects.equals(userName, user.userName) && Objects.equals(results, user.results);
+        return Objects.equals(userId, user.userId) && Objects.equals(password, user.password)&& Objects.equals(results, user.results);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, password, userName, results);
+        return Objects.hash(userId, password, results);
     }
 
     @Override
@@ -83,7 +70,6 @@ public class User {
         return "User{" +
                 "userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
-                ", userName='" + userName + '\'' +
                 ", results=" + results +
                 '}';
     }

@@ -5,17 +5,11 @@ import java.util.Objects;
 public class LoginResponseDTO {
     private String message;
     private String id;
-    private String nickname;
 
-    protected LoginResponseDTO() {}
+    public LoginResponseDTO() {}
 
     public LoginResponseDTO(String message) {
         this.message = message;
-    }
-
-    public LoginResponseDTO(String id, String nickname) {
-        this.id = id;
-        this.nickname = nickname;
     }
 
     public String getMessage() {
@@ -34,24 +28,16 @@ public class LoginResponseDTO {
         this.id = id;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         LoginResponseDTO that = (LoginResponseDTO) o;
-        return Objects.equals(message, that.message) && Objects.equals(id, that.id) && Objects.equals(nickname, that.nickname);
+        return Objects.equals(message, that.message) && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(message, id, nickname);
+        return Objects.hash(message, id);
     }
 
     @Override
@@ -59,7 +45,6 @@ public class LoginResponseDTO {
         return "LoginResponseDTO{" +
                 "message='" + message + '\'' +
                 ", id='" + id + '\'' +
-                ", nickname='" + nickname + '\'' +
                 '}';
     }
 }
