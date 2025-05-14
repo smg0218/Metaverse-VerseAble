@@ -2,6 +2,7 @@ package com.deeppoem.verseable.api.result.service;
 
 import com.deeppoem.verseable.api.result.dto.request.ResultRequestDTO;
 import com.deeppoem.verseable.api.result.dto.response.ResultResponseDTO;
+import com.deeppoem.verseable.api.result.dto.response.ResultResponseMessageDTO;
 import com.deeppoem.verseable.api.result.repository.ResultRepository;
 import com.deeppoem.verseable.api.user.repository.UserRepository;
 import com.deeppoem.verseable.model.entity.Result;
@@ -33,7 +34,7 @@ public class ResultService {
     }
 
     @Transactional
-    public String addResult(ResultRequestDTO requestDTO) {
+    public ResultResponseMessageDTO addResult(ResultRequestDTO requestDTO) {
         Optional<User> findUser = userRepository.findById(requestDTO.getId());
         if (findUser.isPresent()) {
             User user = findUser.get();
@@ -44,9 +45,11 @@ public class ResultService {
 
             resultRepository.save(result);
 
-            return null;
+            ResultResponseDTO responseDTO = new ResultResponseDTO(result);
+
+            return new ResultResponseMessageDTO(responseDTO);
         } else {
-            return "유저를 찾지 못했습니다!";
+            return new ResultResponseMessageDTO("유저를 찾지 못했습니다!");
         }
     }
 }
