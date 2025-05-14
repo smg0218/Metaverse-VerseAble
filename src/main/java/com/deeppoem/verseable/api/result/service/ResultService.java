@@ -8,6 +8,7 @@ import com.deeppoem.verseable.model.entity.Result;
 import com.deeppoem.verseable.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ public class ResultService {
             throw new IllegalArgumentException("존재하지 않는 ID값 입니다!");
     }
 
+    @Transactional
     public String addResult(ResultRequestDTO requestDTO) {
         Optional<User> findUser = userRepository.findById(requestDTO.getId());
         if (findUser.isPresent()) {
