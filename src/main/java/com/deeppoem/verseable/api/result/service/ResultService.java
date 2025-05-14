@@ -7,6 +7,7 @@ import com.deeppoem.verseable.api.result.repository.ResultRepository;
 import com.deeppoem.verseable.api.user.repository.UserRepository;
 import com.deeppoem.verseable.model.entity.Result;
 import com.deeppoem.verseable.model.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +31,11 @@ public class ResultService {
         if (result.isPresent()) {
             return new ResultResponseDTO(result.get());
         } else
-            throw new IllegalArgumentException("존재하지 않는 ID값 입니다!");
+            return null;
     }
 
     @Transactional
-    public ResultResponseMessageDTO addResult(ResultRequestDTO requestDTO) {
+    public ResultResponseMessageDTO addResult(ResultRequestDTO requestDTO, HttpServletRequest request) {
         Optional<User> findUser = userRepository.findById(requestDTO.getId());
         if (findUser.isPresent()) {
             User user = findUser.get();
@@ -43,11 +44,17 @@ public class ResultService {
             result.setUser(user);
             result.setResultText(requestDTO.getResultData());
 
-            resultRepository.save(result);
+            Result saveResult = resultRepository.save(result);
 
-            ResultResponseDTO responseDTO = new ResultResponseDTO(result);
+            ResultResponseDTO responseDTO = new ResultResponseDTO(saveResult);
 
-            return new ResultResponseMessageDTO(responseDTO);
+            ResultResponseMessageDTO resultDTO =  new ResultResponseMessageDTO(responseDTO);
+            String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
+                    "/api/result/share?resultId=" + saveResult.getResultId();
+
+            resultDTO.setResultShare(url);
+
+            return resultDTO;
         } else {
             return new ResultResponseMessageDTO("유저를 찾지 못했습니다!");
         }

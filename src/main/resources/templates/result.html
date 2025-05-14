@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>결과 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .result-text {
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>결과 공유</h1>
+        <div th:if="${result != null}">
+            <div class="result-text">
+                <p th:text="${result.resultText}">결과 텍스트</p>
+            </div>
+        </div>
+        <div th:unless="${result != null}">
+            <p>결과 데이터를 찾을 수 없습니다.</p>
+        </div>
+    </div>
+</body>
+</html>
