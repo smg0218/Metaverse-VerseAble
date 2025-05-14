@@ -21,11 +21,16 @@ public class ResultResponseDTO {
         this.resultId = resultId;
     }
 
+    public String getResultPath() {
+        return resultPath;
+    }
+    
+    // 이전 메소드명 호환성 유지
     public String getResultText() {
         return resultPath;
     }
 
-    public void setResultText(String resultText) {
-        this.resultPath = resultText;
+    public void setResultPath(String resultPath) {
+        this.resultPath = resultPath;
     }
 }

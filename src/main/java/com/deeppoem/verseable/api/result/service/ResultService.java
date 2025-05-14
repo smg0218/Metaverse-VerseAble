@@ -8,10 +8,10 @@ import com.deeppoem.verseable.api.user.repository.UserRepository;
 import com.deeppoem.verseable.model.entity.Result;
 import com.deeppoem.verseable.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,11 +26,16 @@ import java.util.UUID;
 
 @Service
 public class ResultService {
+    private static final Logger log = LoggerFactory.getLogger(ResultService.class);
+    
     private final UserRepository userRepository;
     private final ResultRepository resultRepository;
     
-    @Value("${file.upload.path:${user.home}/verseable-uploads}")
+    @Value("${file.upload.path}")
     private String uploadPath;
+    
+    @Value("${file.upload.access-path}")
+    private String accessPath;
 
     @Autowired
     public ResultService(UserRepository userRepository, ResultRepository resultRepository) {
@@ -68,11 +73,20 @@ public class ResultService {
             // 외부 업로드 디렉터리 생성
             Path uploadDir = Paths.get(uploadPath);
             if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
+                try {
+                    Files.createDirectories(uploadDir);
+                    log.info("업로드 디렉토리 생성 완료: {}", uploadPath);
+                } catch (IOException e) {
+                    log.error("업로드 디렉토리 생성 실패: {}", e.getMessage());
+                    throw new IOException("업로드 디렉토리 생성 실패: " + e.getMessage());
+                }
             }
 
+            // 파일 이름 설정
             String originalFileName = multipartFile.getOriginalFilename();
-            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String ext = originalFileName != null && originalFileName.contains(".") 
+                       ? originalFileName.substring(originalFileName.lastIndexOf(".")) 
+                       : ".jpg";
             String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
             
             // 파일을 업로드 디렉터리에 저장
@@ -80,13 +94,29 @@ public class ResultService {
             
             try {
                 multipartFile.transferTo(targetPath.toFile());
+                
+                // 파일 권한 설정 (읽기 권한 추가)
+                File uploadedFile = targetPath.toFile();
+                if (!uploadedFile.canRead()) {
+                    uploadedFile.setReadable(true, false);
+                }
+                
+                log.info("파일 업로드 성공: {}", targetPath);
             } catch (Exception e) {
+                log.error("파일 업로드 실패: {}", e.getMessage());
                 e.printStackTrace();
                 throw new IOException("파일 업로드 실패: " + e.getMessage());
             }
 
-            // 정적 리소스 URL 경로 설정 (/uploads/*)
-            result.setResultPath("/uploads/" + savedName);
+            // accessPath에서 와일드카드 제거하여 기본 경로 추출 ("/images/**" -> "/images/")
+            String accessPathBase = accessPath.replace("**", "");
+            
+            // 정적 리소스 URL 경로 설정
+            result.setResultPath(accessPathBase + savedName);
+            
+            // 디버깅을 위한 로그 추가
+            log.info("저장된 이미지 경로: {}", result.getResultPath());
+            log.info("실제 파일 위치: {}", targetPath.toString());
 
             Result saveResult = resultRepository.save(result);
 
