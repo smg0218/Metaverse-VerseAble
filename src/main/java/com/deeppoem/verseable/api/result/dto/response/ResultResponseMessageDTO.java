@@ -3,6 +3,7 @@ package com.deeppoem.verseable.api.result.dto.response;
 public class ResultResponseMessageDTO {
     private String message;
     private ResultResponseDTO resultResponse;
+    private String imagePath;
 
     protected ResultResponseMessageDTO() {}
 
@@ -20,5 +21,13 @@ public class ResultResponseMessageDTO {
 
     public ResultResponseDTO getResultResponse() {
         return resultResponse;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

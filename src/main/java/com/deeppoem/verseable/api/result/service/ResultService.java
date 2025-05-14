@@ -46,6 +46,8 @@ public class ResultService {
 
             resultDTO.getResultResponse().setResultShare(url);
 
+            resultDTO.setImagePath(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + result.get().getResultPath());
+
             return resultDTO;
 
         } else
