@@ -57,7 +57,7 @@ public class ResultController {
     }
 
     @GetMapping("/share")
-    public String getResultSite(@RequestParam(name = "resultId") Long resultId,
+    public String getResultSite(@RequestParam Long resultId,
                                 Model model, HttpServletRequest request) {
         log.info("/api/result/share : GET");
         log.info("userId : {}", resultId);
