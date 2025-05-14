@@ -47,6 +47,7 @@ public class ResultController {
                                         HttpServletRequest request) {
         log.info("/api/result : POST");
         log.info("requestDTO : {}", id);
+        log.info("multipartFile : {}", multipartFile);
 
         if(multipartFile == null || multipartFile.isEmpty()) {
             return ResponseEntity.badRequest().body(new ResultResponseMessageDTO("파일은 필수입니다!"));
