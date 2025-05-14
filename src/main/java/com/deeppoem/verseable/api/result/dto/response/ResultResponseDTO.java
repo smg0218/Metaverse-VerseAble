@@ -4,13 +4,13 @@ import com.deeppoem.verseable.model.entity.Result;
 
 public class ResultResponseDTO {
     private Long resultId;
-    private String resultShare;
+    private String resultPath;
 
     protected ResultResponseDTO() {}
 
     public ResultResponseDTO(Result result) {
         this.resultId = result.getResultId();
-        this.resultShare = result.getResultPath();
+        this.resultPath = result.getResultPath();
     }
 
     public Long getResultId() {
@@ -21,11 +21,11 @@ public class ResultResponseDTO {
         this.resultId = resultId;
     }
 
-    public String getResultShare() {
-        return resultShare;
+    public String getResultPath() {
+        return resultPath;
     }
 
-    public void setResultShare(String resultShare) {
-        this.resultShare = resultShare;
+    public void setResultPath(String resultPath) {
+        this.resultPath = resultPath;
     }
 }

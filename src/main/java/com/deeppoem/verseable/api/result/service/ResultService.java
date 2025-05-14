@@ -44,7 +44,7 @@ public class ResultService {
             String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                     "/api/result/share?resultId=" + result.get().getResultId();
 
-            resultDTO.getResultResponse().setResultShare(url);
+            resultDTO.getResultResponse().setResultPath(url);
 
             resultDTO.setImagePath(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + result.get().getResultPath());
 
@@ -75,7 +75,7 @@ public class ResultService {
             String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/"
                     + "api/result/share?resultId=" + saveResult.getResultId();
 
-            resultDTO.getResultResponse().setResultShare(url);
+            resultDTO.getResultResponse().setResultPath(url);
 
             return resultDTO;
         } else {
