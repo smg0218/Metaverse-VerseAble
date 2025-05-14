@@ -44,7 +44,7 @@ public class ResultService {
             String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                     "/api/result/share?resultId=" + result.get().getResultId();
 
-            resultDTO.setResultShare(url);
+            resultDTO.getResultResponse().setResultShare(url);
 
             return resultDTO;
 
@@ -73,7 +73,7 @@ public class ResultService {
             String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/"
                     + "api/result/share?resultId=" + saveResult.getResultId();
 
-            resultDTO.setResultShare(url);
+            resultDTO.getResultResponse().setResultShare(url);
 
             return resultDTO;
         } else {
