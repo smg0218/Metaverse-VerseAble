@@ -21,11 +21,11 @@ public class ResultResponseDTO {
         this.resultId = resultId;
     }
 
-    public String getResultText() {
+    public String getResultPath() {
         return resultPath;
     }
 
-    public void setResultText(String resultText) {
-        this.resultPath = resultText;
+    public void setResultText(String resultPath) {
+        this.resultPath = resultPath;
     }
 }
