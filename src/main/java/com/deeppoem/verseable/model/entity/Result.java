@@ -10,8 +10,8 @@ public class Result {
     @Column(name = "RESULT_ID")
     private Long resultId;
 
-    @Column(name = "RESULT_TEXT", columnDefinition = "TEXT")
-    private String resultText;
+    @Column(name = "RESULT_PATH")
+    private String resultPath;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,12 +25,12 @@ public class Result {
         this.resultId = resultId;
     }
 
-    public String getResultText() {
-        return resultText;
+    public String getResultPath() {
+        return resultPath;
     }
 
-    public void setResultText(String resultText) {
-        this.resultText = resultText;
+    public void setResultPath(String resultText) {
+        this.resultPath = resultText;
     }
 
     public User getUser() {
@@ -45,7 +45,7 @@ public class Result {
     public String toString() {
         return "Result{" +
                 "resultId=" + resultId +
-                ", resultText='" + resultText +
+                ", resultPath='" + resultPath +
                 '}';
     }
 }

@@ -38,7 +38,7 @@
         <h1>결과 공유</h1>
         <div th:if="${result.resultResponse != null}">
             <div class="result-text">
-                <p th:text="${result.resultResponse.resultText}">결과 텍스트</p>
+                <img th:src="${result.resultResponse.getResultText}" width="500" height="300"/>
             </div>
         </div>
         <div th:unless="${result.resultResponse != null}">

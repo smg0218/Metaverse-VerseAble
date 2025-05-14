@@ -9,15 +9,28 @@ import com.deeppoem.verseable.model.entity.Result;
 import com.deeppoem.verseable.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ResultService {
     private final UserRepository userRepository;
     private final ResultRepository resultRepository;
+    
+    @Value("${file.upload.path:${user.home}/verseable-uploads}")
+    private String uploadPath;
 
     @Autowired
     public ResultService(UserRepository userRepository, ResultRepository resultRepository) {
@@ -31,7 +44,7 @@ public class ResultService {
         if (result.isPresent()) {
             ResultResponseDTO responseDTO = new ResultResponseDTO(result.get());
 
-            ResultResponseMessageDTO resultDTO =  new ResultResponseMessageDTO(responseDTO);
+            ResultResponseMessageDTO resultDTO = new ResultResponseMessageDTO(responseDTO);
             String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                     "/api/result/share?resultId=" + result.get().getResultId();
 
@@ -44,22 +57,44 @@ public class ResultService {
     }
 
     @Transactional
-    public ResultResponseMessageDTO addResult(ResultRequestDTO requestDTO, HttpServletRequest request) {
-        Optional<User> findUser = userRepository.findById(requestDTO.getId());
+    public ResultResponseMessageDTO addResult(String id, MultipartFile multipartFile, HttpServletRequest request) throws IOException {
+        Optional<User> findUser = userRepository.findById(id);
         if (findUser.isPresent()) {
             User user = findUser.get();
 
             Result result = new Result();
             result.setUser(user);
-            result.setResultText(requestDTO.getResultData());
+            
+            // 외부 업로드 디렉터리 생성
+            Path uploadDir = Paths.get(uploadPath);
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+
+            String originalFileName = multipartFile.getOriginalFilename();
+            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+            
+            // 파일을 업로드 디렉터리에 저장
+            Path targetPath = uploadDir.resolve(savedName);
+            
+            try {
+                multipartFile.transferTo(targetPath.toFile());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new IOException("파일 업로드 실패: " + e.getMessage());
+            }
+
+            // 정적 리소스 URL 경로 설정 (/uploads/*)
+            result.setResultPath("/uploads/" + savedName);
 
             Result saveResult = resultRepository.save(result);
 
             ResultResponseDTO responseDTO = new ResultResponseDTO(saveResult);
 
-            ResultResponseMessageDTO resultDTO =  new ResultResponseMessageDTO(responseDTO);
-            String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
-                    "/api/result/share?resultId=" + saveResult.getResultId();
+            ResultResponseMessageDTO resultDTO = new ResultResponseMessageDTO(responseDTO);
+            String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/"
+                    + "api/result/share?resultId=" + saveResult.getResultId();
 
             resultDTO.setResultShare(url);
 

@@ -1,14 +1,14 @@
 package com.deeppoem.verseable.api.result.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
 public class ResultRequestDTO {
     @NotBlank(message = "유저의 아이디는 필수값입니다!")
     private String id;
-    @NotBlank(message = "결과 데이터는 필수값입니다!")
-    private String resultData;
+    private MultipartFile multipartFile;
 
     protected ResultRequestDTO() {}
 
@@ -20,31 +20,31 @@ public class ResultRequestDTO {
         this.id = id;
     }
 
-    public String getResultData() {
-        return resultData;
+    public MultipartFile getMultipartFile() {
+        return multipartFile;
     }
 
-    public void setResultData(String resultData) {
-        this.resultData = resultData;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        ResultRequestDTO that = (ResultRequestDTO) o;
-        return Objects.equals(id, that.id) && Objects.equals(resultData, that.resultData);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, resultData);
+    public void setMultipartFile(MultipartFile multipartFile) {
+        this.multipartFile = multipartFile;
     }
 
     @Override
     public String toString() {
         return "ResultRequestDTO{" +
                 "id='" + id + '\'' +
-                ", resultData='" + resultData + '\'' +
+                ", multipartFile=" + multipartFile +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ResultRequestDTO that = (ResultRequestDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(multipartFile, that.multipartFile);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, multipartFile);
     }
 }

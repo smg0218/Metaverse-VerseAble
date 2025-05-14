@@ -1,4 +1,11 @@
 spring:
+  mvc:
+    static-path-pattern: /static/**
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      location:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://midnight.cf8soa26yc3q.ap-northeast-2.rds.amazonaws.com:3306/midnight
@@ -21,3 +28,8 @@ server:
   error:
     whitelabel:
       enabled: false
+
+# 파일 업로드 경로 설정
+file:
+  upload:
+    path: ${user.home}/verseable-uploads

@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/result")
@@ -40,27 +42,30 @@ public class ResultController {
 
     @ResponseBody
     @PostMapping()
-    public ResponseEntity<?> postResult(@RequestBody ResultRequestDTO requestDTO, BindingResult result,
+    public ResponseEntity<?> postResult(@RequestParam("id") String id,
+                                        @RequestParam("file") MultipartFile multipartFile,
                                         HttpServletRequest request) {
         log.info("/api/result : POST");
-        log.info("requestDTO : {}", requestDTO);
+        log.info("requestDTO : {}", id);
 
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(new LoginResponseDTO(
-                    result.getAllErrors().get(0).getDefaultMessage()
-            ));
+        if(multipartFile == null || multipartFile.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ResultResponseMessageDTO("파일은 필수입니다!"));
         }
 
-        ResultResponseMessageDTO resultDTO = resultService.addResult(requestDTO, request);
-
-        return ResponseEntity.ok().body(resultDTO);
+        try {
+            ResultResponseMessageDTO resultDTO = resultService.addResult(id, multipartFile, request);
+            return ResponseEntity.ok().body(resultDTO);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ResultResponseMessageDTO(e.getMessage()));
+        }
     }
 
     @GetMapping("/share")
     public String getResultSite(@RequestParam Long resultId,
                                 Model model, HttpServletRequest request) {
         log.info("/api/result/share : GET");
-        log.info("userId : {}", resultId);
+        log.info("resultId : {}", resultId);
 
         ResultResponseMessageDTO responseDTO = resultService.getResult(resultId, request);
 
