@@ -51,7 +51,7 @@ public class ResultService {
             return resultDTO;
 
         } else
-            return null;
+            return new ResultResponseMessageDTO("올바른 주소를 입력해주세요!");
     }
 
     @Transactional
