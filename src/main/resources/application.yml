@@ -32,4 +32,4 @@ server:
 # 파일 업로드 경로 설정
 file:
   upload:
-    path: ${user.home}/verseable-uploads
+    path: /verseable-uploads
