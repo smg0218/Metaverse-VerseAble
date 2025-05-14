@@ -1,31 +1,27 @@
 package com.deeppoem.verseable.api.result.service;
 
-import com.deeppoem.verseable.api.result.dto.request.ResultRequestDTO;
 import com.deeppoem.verseable.api.result.dto.response.ResultResponseDTO;
 import com.deeppoem.verseable.api.result.dto.response.ResultResponseMessageDTO;
 import com.deeppoem.verseable.api.result.repository.ResultRepository;
 import com.deeppoem.verseable.api.user.repository.UserRepository;
 import com.deeppoem.verseable.model.entity.Result;
 import com.deeppoem.verseable.model.entity.User;
+import com.deeppoem.verseable.util.FileUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ResultService {
+    @Value("${upload.path}")
+    private String rootFilePath;
+
     private final UserRepository userRepository;
     private final ResultRepository resultRepository;
     
@@ -64,29 +60,10 @@ public class ResultService {
 
             Result result = new Result();
             result.setUser(user);
-            
-            // 외부 업로드 디렉터리 생성
-            Path uploadDir = Paths.get(uploadPath);
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
-            }
 
-            String originalFileName = multipartFile.getOriginalFilename();
-            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
-            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
-            
-            // 파일을 업로드 디렉터리에 저장
-            Path targetPath = uploadDir.resolve(savedName);
-            
-            try {
-                multipartFile.transferTo(targetPath.toFile());
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new IOException("파일 업로드 실패: " + e.getMessage());
-            }
+            String resultPath = FileUtil.uploadFile(multipartFile, rootFilePath);
 
-            // 정적 리소스 URL 경로 설정 (/uploads/*)
-            result.setResultPath("/uploads/" + savedName);
+            result.setResultPath("/local/" + resultPath);
 
             Result saveResult = resultRepository.save(result);
 
