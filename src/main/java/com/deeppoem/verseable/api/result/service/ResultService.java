@@ -25,11 +25,20 @@ public class ResultService {
         this.resultRepository = resultRepository;
     }
 
-    public ResultResponseDTO getResult(Long resultId) {
+    public ResultResponseMessageDTO getResult(Long resultId, HttpServletRequest request) {
         Optional<Result> result = resultRepository.findById(resultId);
 
         if (result.isPresent()) {
-            return new ResultResponseDTO(result.get());
+            ResultResponseDTO responseDTO = new ResultResponseDTO(result.get());
+
+            ResultResponseMessageDTO resultDTO =  new ResultResponseMessageDTO(responseDTO);
+            String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
+                    "/api/result/share?resultId=" + result.get().getResultId();
+
+            resultDTO.setResultShare(url);
+
+            return resultDTO;
+
         } else
             return null;
     }

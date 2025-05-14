@@ -28,11 +28,12 @@ public class ResultController {
 
     @ResponseBody
     @GetMapping()
-    public ResponseEntity<?> getResultList(@RequestParam Long resultId) {
+    public ResponseEntity<?> getResult(@RequestParam Long resultId,
+                                       HttpServletRequest request) {
         log.info("/api/result : GET");
         log.info("userId : {}", resultId);
 
-        ResultResponseDTO responseDTO = resultService.getResult(resultId);
+        ResultResponseMessageDTO responseDTO = resultService.getResult(resultId, request);
 
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -57,11 +58,11 @@ public class ResultController {
 
     @GetMapping("/share")
     public String getResultSite(@RequestParam(name = "resultId") Long resultId,
-                                Model model) {
+                                Model model, HttpServletRequest request) {
         log.info("/api/result/share : GET");
         log.info("userId : {}", resultId);
 
-        ResultResponseDTO responseDTO = resultService.getResult(resultId);
+        ResultResponseMessageDTO responseDTO = resultService.getResult(resultId, request);
 
         model.addAttribute("result", responseDTO);
 
